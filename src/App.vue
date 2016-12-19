@@ -71,6 +71,9 @@ export default {
   components: {
     'viewer-header': require('./components/header/ComponentHeader.vue'),
     'editor-header': require('./components/header/EditorHeader.vue'),
+
+    'viewer-footer': require('./components/footer/ComponentFooter.vue'),
+    'editor-footer': require('./components/footer/EditorFooter.vue'),
   },
   data () {
     return {
@@ -101,6 +104,21 @@ export default {
             fontSize: '1.5rem',
             fontWeight: 300,
             opacity: 0.85
+          }
+        }
+      }, {
+        type: 'FOOTER',
+        uuid: 1,
+        meta: {
+          active: true
+        },
+        data: {
+          text: '©2016 Footer Text',
+          style: {
+            backgroundColor: '#eee',
+            color: '#666',
+            textAlign: 'left',
+            fontSize: '1rem'
           }
         }
       }]
