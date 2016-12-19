@@ -5,7 +5,7 @@
       <div class="editor-title">Title</div>
       <input type="text" v-model="element.data.title"/>
     </div>
-    <div class="editor-block">
+    <div class="editor-block" v-if="element.data.title.length">
       <div class="editor-title">Title Font size</div>
       <fontSize :defaultValue="'4rem'" v-model="element.data.titleStyle.fontSize" />
     </div>

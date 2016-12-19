@@ -126,7 +126,7 @@ export default {
   }
 
   body, input, textarea, button {
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, Segoe IO, Roboto, sans-serif;
     font-weight: 300;
     font-size: 15px;
     line-height: 1.618;

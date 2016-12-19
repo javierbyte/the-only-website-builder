@@ -1,18 +1,6 @@
-# the-only-website
+#
 
-> A Vue.js project
+You are going to design a website like this anyway... let's do it the easy way http://javier.xyz/the-only-website-builder/
 
-## Build Setup
+[![](docs/tweet.png)](http://javier.xyz/the-only-website-builder/)
 
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-```
-
-For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
