@@ -87,11 +87,20 @@ export default {
         },
         data: {
           title: 'Header title',
+          subtitle: '',
           style: {
             backgroundColor: '#222',
             color: '#fff',
-            textAlign: 'center',
-            fontSize: '2rem'
+            textAlign: 'center'
+          },
+          titleStyle: {
+            fontSize: '4rem',
+            fontWeight: 500
+          },
+          subtitleStyle: {
+            fontSize: '1.5rem',
+            fontWeight: 300,
+            opacity: 0.85
           }
         }
       }]

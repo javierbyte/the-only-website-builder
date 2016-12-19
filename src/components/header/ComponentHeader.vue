@@ -1,9 +1,13 @@
 <template>
   <div class="component-header" :style="this.data.style">
     <div class="component-content">
-      <h1>
+      <div :style="this.data.titleStyle">
         {{data.title}}
-      </h1>
+      </div>
+
+      <div :style="this.data.subtitleStyle">
+        {{data.subtitle}}
+      </div>
     </div>
   </div>
 </template>
@@ -19,6 +23,9 @@
   .component-header .component-content{
     padding-top: 10vmin;
     padding-bottom: 10vmin;
+  }
+
+  .component-content > * {
     transition: font-size 0.2s;
   }
 </style>

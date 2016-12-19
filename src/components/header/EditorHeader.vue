@@ -5,6 +5,10 @@
       <div class="editor-title">Title</div>
       <input type="text" v-model="element.data.title"/>
     </div>
+    <div class="editor-block">
+      <div class="editor-title">Title Font size</div>
+      <fontSize :defaultValue="'4rem'" v-model="element.data.titleStyle.fontSize" />
+    </div>
 
     <div class="editor-block">
       <div class="editor-title">Text Align</div>
@@ -12,8 +16,13 @@
     </div>
 
     <div class="editor-block">
-      <div class="editor-title">Font size</div>
-      <fontSize :defaultValue="'2rem'" v-model="element.data.style.fontSize" />
+      <div class="editor-title">Subtitle</div>
+      <input type="text" v-model="element.data.subtitle"/>
+    </div>
+
+    <div class="editor-block" v-if="element.data.subtitle.length">
+      <div class="editor-title">Subtitle Font size</div>
+      <fontSize :defaultValue="'1.5rem'" v-model="element.data.subtitleStyle.fontSize" />
     </div>
 
   </div>
