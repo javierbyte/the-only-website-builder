@@ -8,16 +8,12 @@
 
     <div class="editor-block">
       <div class="editor-title">Text Align</div>
-      <input type="radio" id="Left" value="left" v-model="element.data.style.textAlign">
-      <label for="Left">
-        Left
-      </label>
-      <br>
-      <input type="radio" id="Center" value="center" v-model="element.data.style.textAlign">
-      <label for="Center">Center</label>
-      <br>
-      <input type="radio" id="Right" value="right" v-model="element.data.style.textAlign">
-      <label for="Right">Right</label>
+      <textAlign v-model="element.data.style.textAlign">
+    </div>
+
+    <div class="editor-block">
+      <div class="editor-title">Font size</div>
+      <fontSize :defaultValue="'2rem'" v-model="element.data.style.fontSize" />
     </div>
 
   </div>
@@ -26,6 +22,10 @@
 <script>
   export default {
     name: 'editor-header',
-    props: ['element']
+    props: ['element'],
+    components: {
+      fontSize: require('../../ui/FontSize.vue'),
+      textAlign: require('../../ui/TextAlign.vue')
+    }
   }
 </script>

@@ -90,7 +90,8 @@ export default {
           style: {
             backgroundColor: '#222',
             color: '#fff',
-            textAlign: 'center'
+            textAlign: 'center',
+            fontSize: '2rem'
           }
         }
       }]
@@ -239,6 +240,13 @@ export default {
   button:active {
     outline: none;
     background: #34495E;
+  }
+
+  .component-content {
+    max-width: 960px;
+    margin: 0 auto;
+    padding-left: 5vmin;
+    padding-right: 5vmin;
   }
 
   .p-1 {
