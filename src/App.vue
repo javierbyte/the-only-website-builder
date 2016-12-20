@@ -77,6 +77,7 @@ const app = {
     socket.emit('JOINROOM', ROOM)
 
     socket.on('UPDATE', newWebData => {
+      console.info('UPDATE FROM SOCKET', newWebData)
       this.$set(this, 'webdata', newWebData)
       preventUpdate = true
     })
