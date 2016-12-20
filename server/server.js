@@ -47,6 +47,8 @@ const BASE = [{
 
 var STATE = {}
 
+console.log('STARTING!')
+
 io.on('connection', function (socket) {
   socket.on('UPDATE', function (data) {
     var room = data.room

@@ -18,7 +18,7 @@
       }
 
 
-      if (window.location.hostname !== 'localhost:8080') {
+      if (window.location.host !== 'localhost') {
           appendJS('http://javierbyte.com:8124/socket.io/socket.io.js', function() {
             console.log('Loading javierbyte socket')
             appendJS('dist/build.js')
