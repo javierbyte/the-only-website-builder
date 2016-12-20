@@ -19,15 +19,15 @@
 
 
       if (window.location.hostname !== 'localhost') {
-          appendJS('http://javierbyte.com:8124/socket.io/socket.io.js', function() {
-            console.info('Loading javierbyte socket')
-            appendJS('dist/build.js')
-          })
+        appendJS('http://javierbyte.com:8124/socket.io/socket.io.js', function() {
+          console.info('Loading javierbyte socket')
+          appendJS('dist/build.js')
+        })
       } else {
-          appendJS('http://localhost:8124/socket.io/socket.io.js', function() {
-            console.info('Loading localhost socket')
-            appendJS('dist/build.js')
-          })
+        appendJS('http://localhost:8124/socket.io/socket.io.js', function() {
+          console.info('Loading localhost socket')
+          appendJS('dist/build.js')
+        })
       }
     </script>
     <script src="dist/build.js"></script>

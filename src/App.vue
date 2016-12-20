@@ -71,6 +71,18 @@ if (window.io) {
 
 var preventUpdate = false
 
+var throttledWebdataHandler = _.throttle((newWebData) => {
+  if (preventUpdate) {
+    preventUpdate = false
+    console.info('PREVENTED UPDATE')
+    return
+  }
+  socket.emit('UPDATE', {
+    room: ROOM,
+    webdata: newWebData
+  })
+}, 64)
+
 const app = {
   name: 'app',
   created() {
@@ -81,27 +93,15 @@ const app = {
         console.log('Prevented for equality', newWebData)
       }
       console.info('UPDATE FROM SOCKET', newWebData)
-      this.$set(this, 'webdata', newWebData)
       preventUpdate = true
+      this.$set(this, 'webdata', newWebData)
     })
   },
   watch: {
-    /*
     webdata: {
-      handler(newWebData) {
-        if (preventUpdate) {
-          preventUpdate = false
-          console.info('PREVENTED UPDATE')
-          return
-        }
-        socket.emit('UPDATE', {
-          room: ROOM,
-          webdata: newWebData
-        })
-      },
+      handler: throttledWebdataHandler,
       deep: true
     }
-    */
   },
   methods: {
     updated() {

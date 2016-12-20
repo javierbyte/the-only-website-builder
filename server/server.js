@@ -53,7 +53,7 @@ io.on('connection', function (socket) {
   socket.on('UPDATE', function (data) {
     var room = data.room
     STATE[room] = data.webdata
-    io.to(room).emit('UPDATE', STATE[room])
+    socket.broadcast.to(room).emit('UPDATE', STATE[room])
   });
 
   socket.on('JOINROOM', function (room) {
