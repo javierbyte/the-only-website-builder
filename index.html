@@ -6,6 +6,30 @@
   </head>
   <body>
     <div id="app"></div>
+
+    <script>
+      function appendJS(jsSrc, onLoad) {
+        var head = document.getElementsByTagName('head')[0]
+        var js = document.createElement('script')
+        js.type = 'text/javascript'
+        js.onload = onLoad
+        js.src = jsSrc
+        head.appendChild(js)
+      }
+
+
+      if (window.location.hostname === 'javierbyte.com') {
+          appendJS('http://javierbyte.com:8124/socket.io/socket.io.js', function() {
+            console.log('noes')
+            appendJS('dist/build.js')
+          })
+      } else {
+          appendJS('http://localhost:8124/socket.io/socket.io.js', function() {
+            console.log('noes')
+            appendJS('dist/build.js')
+          })
+      }
+    </script>
     <script src="dist/build.js"></script>
   </body>
 </html>

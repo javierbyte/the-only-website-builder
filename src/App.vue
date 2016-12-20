@@ -16,7 +16,7 @@
           </div>
         </div><!-- /sidebar-constructor -->
 
-        <div class="sidebar-editor">
+        <div class="sidebar-editor" v-if="webdata.length">
           <div class="sidebar-header">
             Editing {{activeEditingElement.type}}
           </div>
@@ -47,10 +47,58 @@
 
 <script>
 const _ = require('lodash')
+const uuidV1 = require('uuid/v1')
 
-export default {
+const ROOM = window.location.search.split('?room=')[1] || uuidV1()
+
+history.pushState({}, null, `?room=${ROOM}`);
+
+var socket = {}
+if (window.io) {
+  if (window.location.hostname === 'javierbyte.com') {
+    socket = io.connect('http://javierbyte.com:8124')
+  } else {
+    socket = io.connect('http://localhost:8124')
+  }
+} else {
+  socket = {
+    on: () => {console.log(arguments)},
+    emit: () => {console.log(arguments)}
+  }
+}
+
+var preventUpdate = false
+
+const app = {
   name: 'app',
+  created() {
+    socket.emit('JOINROOM', ROOM)
+
+    socket.on('UPDATE', newWebData => {
+      this.$set(this, 'webdata', newWebData)
+      preventUpdate = true
+    })
+  },
+  watch: {
+    webdata: {
+      handler(newWebData) {
+        if (preventUpdate) {
+          preventUpdate = false
+          return
+        }
+
+        socket.emit('UPDATE', {
+          room: ROOM,
+          webdata: newWebData
+        })
+      },
+      deep: true
+    }
+  },
   methods: {
+    updated() {
+      console.warn('\n\n\naspojasd')
+    },
     onEditElement(uuid) {
       console.log('Enter edit mode', uuid)
       this.editorStatus.editingActive = true
@@ -82,49 +130,13 @@ export default {
         editingActive: false,
         editingElement: 0
       },
-      webdata: [{
-        type: 'HEADER',
-        uuid: 0,
-        meta: {
-          active: true
-        },
-        data: {
-          title: 'Header title',
-          subtitle: '',
-          style: {
-            backgroundColor: '#222',
-            color: '#fff',
-            textAlign: 'center'
-          },
-          titleStyle: {
-            fontSize: '4rem',
-            fontWeight: 500
-          },
-          subtitleStyle: {
-            fontSize: '1.5rem',
-            fontWeight: 300,
-            opacity: 0.85
-          }
-        }
-      }, {
-        type: 'FOOTER',
-        uuid: 1,
-        meta: {
-          active: true
-        },
-        data: {
-          text: '©2016 Footer Text',
-          style: {
-            backgroundColor: '#eee',
-            color: '#666',
-            textAlign: 'left',
-            fontSize: '1rem'
-          }
-        }
-      }]
+      webdata: []
     }
   }
 }
+
+export default app
+
 </script>
 
 <style>

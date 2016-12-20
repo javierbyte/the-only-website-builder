@@ -10,8 +10,11 @@
   },
   "dependencies": {
     "lodash": "^4.17.2",
+    "socket.io": "^1.7.2",
+    "uuid": "^3.0.1",
     "vue": "^2.1.0",
-    "vue-color": "^2.0.2"
+    "vue-color": "^2.0.2",
+    "vue-server-renderer": "^2.1.6"
   },
   "devDependencies": {
     "babel-core": "^6.0.0",

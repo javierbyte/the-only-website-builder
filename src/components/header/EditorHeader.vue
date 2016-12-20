@@ -25,6 +25,10 @@
       <fontSize :defaultValue="'1.5rem'" v-model="element.data.subtitleStyle.fontSize" />
     </div>
 
+    <div class="editor-block">
+      <div class="editor-title">Background</div>
+      <background v-model="element.data.style.backgroundColor" />
+    </div>
   </div>
 </template>
 
@@ -34,7 +38,8 @@
     props: ['element'],
     components: {
       fontSize: require('../../ui/FontSize.vue'),
-      textAlign: require('../../ui/TextAlign.vue')
+      textAlign: require('../../ui/TextAlign.vue'),
+      background: require('../../ui/Background.vue')
     }
   }
 </script>
