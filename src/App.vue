@@ -56,10 +56,10 @@ history.pushState({}, null, `?room=${ROOM}`);
 var socket = {}
 if (window.io) {
   if (window.location.hostname !== 'localhost') {
-    console.log('Connecting javierbyte socket')
+    console.info('Connecting javierbyte socket')
     socket = io.connect('http://javierbyte.com:8124')
   } else {
-    console.log('Connecting javierbyte socket')
+    console.info('Connecting localhost socket')
     socket = io.connect('http://localhost:8124')
   }
 } else {
@@ -77,19 +77,23 @@ const app = {
     socket.emit('JOINROOM', ROOM)
 
     socket.on('UPDATE', newWebData => {
+      if (_.isEqual(newWebData, this.webdata)) {
+        console.log('Prevented for equality', newWebData)
+      }
       console.info('UPDATE FROM SOCKET', newWebData)
       this.$set(this, 'webdata', newWebData)
       preventUpdate = true
     })
   },
   watch: {
+    /*
     webdata: {
       handler(newWebData) {
         if (preventUpdate) {
           preventUpdate = false
+          console.info('PREVENTED UPDATE')
           return
         }
-
         socket.emit('UPDATE', {
           room: ROOM,
           webdata: newWebData
@@ -97,6 +101,7 @@ const app = {
       },
       deep: true
     }
+    */
   },
   methods: {
     updated() {
