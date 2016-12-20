@@ -20,12 +20,12 @@
 
       if (window.location.hostname !== 'localhost:8080') {
           appendJS('http://javierbyte.com:8124/socket.io/socket.io.js', function() {
-            console.log('noes')
+            console.log('Loading javierbyte socket')
             appendJS('dist/build.js')
           })
       } else {
           appendJS('http://localhost:8124/socket.io/socket.io.js', function() {
-            console.log('noes')
+            console.log('Loading localhost socket')
             appendJS('dist/build.js')
           })
       }

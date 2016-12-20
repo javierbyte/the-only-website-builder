@@ -56,8 +56,10 @@ history.pushState({}, null, `?room=${ROOM}`);
 var socket = {}
 if (window.io) {
   if (window.location.hostname !== 'localhost:8080') {
+    console.log('Connecting javierbyte socket')
     socket = io.connect('http://javierbyte.com:8124')
   } else {
+    console.log('Connecting javierbyte socket')
     socket = io.connect('http://localhost:8124')
   }
 } else {
