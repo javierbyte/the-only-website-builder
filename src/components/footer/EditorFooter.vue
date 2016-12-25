@@ -1,9 +1,8 @@
 <template>
   <div class="editor-footer">
-
     <div class="editor-block">
       <div class="editor-title">Text</div>
-      <input type="text" v-model="element.data.text"/>
+      <input class="input" type="text" v-model="element.data.text"/>
     </div>
 
     <div class="editor-block" v-if="element.data.text.length">

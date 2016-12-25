@@ -1,15 +1,12 @@
 <template>
-  <div>
-    {{value}}
-    <input
-      type="range"
-      :min="minValue"
-      :max="maxValue"
-      :value="inputValue"
-      id="fader"
-      @input="onChangeValue"
-      :step="stepValue">
-  </div>
+  <input
+    class="input"
+    type="range"
+    :min="minValue"
+    :max="maxValue"
+    :value="inputValue"
+    @input="onChangeValue"
+    :step="stepValue">
 </template>
 
 <script>

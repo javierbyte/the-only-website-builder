@@ -3,7 +3,7 @@
 
     <div class="editor-block">
       <div class="editor-title">Title</div>
-      <input type="text" v-model="element.data.title"/>
+      <input class="input" type="text" v-model="element.data.title"/>
     </div>
     <div class="editor-block" v-if="element.data.title.length">
       <div class="editor-title">Title Font size</div>
@@ -17,12 +17,12 @@
 
     <div class="editor-block">
       <div class="editor-title">Subtitle</div>
-      <input type="text" v-model="element.data.subtitle"/>
+      <input class="input" type="text" v-model="element.data.subtitle"/>
     </div>
 
     <div class="editor-block" v-if="element.data.subtitle.length">
       <div class="editor-title">Subtitle Font size</div>
-      <fontSize :defaultValue="'1.5rem'" v-model="element.data.subtitleStyle.fontSize" />
+      <fontSize :defaultValue="'1.4rem'" v-model="element.data.subtitleStyle.fontSize" />
     </div>
 
     <div class="editor-block">

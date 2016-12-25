@@ -23,7 +23,7 @@ const BASE = [{
       fontWeight: 500
     },
     subtitleStyle: {
-      fontSize: '1.5rem',
+      fontSize: '1.4rem',
       fontWeight: 300,
       opacity: 0.85
     }

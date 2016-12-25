@@ -1,6 +1,16 @@
 <template>
-  <div>
-    <!-- <materialPicker v-model="colors" @change-color="onColorChange" /> -->
+  <div class="module module-colorpicker">
+    <div class="module-header" @click="onModuleToggle">
+      <div class="module-colorpicker-color" :style="{backgroundColor: value}"></div>
+      <div class="inline-block">
+        {{value}}
+      </div>
+      <div class="module-header-toggle icon icon-chevron-up" v-if="isModuleOpen"></div>
+      <div class="module-header-toggle icon icon-chevron-down" v-if="!isModuleOpen"></div>
+    </div>
+    <div class="module-content" v-if="isModuleOpen">
+      <ColorPicker v-model="colors" @change-color="onColorChange" />
+    </div>
   </div>
 </template>
 
@@ -28,23 +38,72 @@
     a: 1
   }
 
-  // var materialPicker = require('../../node_modules/vue-color/src/components/Sketch.vue')
+  var ColorPicker = require('vue-color').Chrome
 
   export default {
     name: 'editor-ui-background',
     props: ['value'],
     components: {
-      // materialPicker: materialPicker
+      ColorPicker: ColorPicker
     },
     data: function() {
       return {
-        colors: defaultProps
+        colors: defaultProps,
+        isModuleOpen: false
       }
     },
     methods: {
       onColorChange(evt) {
         this.$emit('input', evt.hex)
+      },
+      onModuleToggle() {
+        this.isModuleOpen = !this.isModuleOpen
       }
     }
   }
 </script>
+
+<style>
+  .module {
+    border-radius: 2px;
+    background: #444;
+  }
+  .module-header {
+    border-radius: 2px;
+    padding: 0.618rem 1rem;
+    cursor: pointer;
+  }
+  .module-header-toggle {
+    float: right;
+  }
+  .module-header:hover {
+    background: #505050;
+  }
+  .module-content {
+    padding: 0.618rem 1rem;
+  }
+
+  .module-colorpicker-color {
+    height: 1.25rem;
+    width: 1.25rem;
+    border-radius: 1.25rem;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 0.25rem;
+    box-shadow: rgba(0, 0, 0, 0.1) 0 1px 0, rgba(0, 0, 0, 0.1) 0 1px 5px;
+  }
+
+  .vue-color__saturation--pointer, .vue-color__c-hue__pointer, .vue-color__c-alpha__pointer {
+    color: transparent;
+    background: #000;
+    border: 1px solid #fff;
+    height: 0.5rem;
+    width: 0.5rem;
+    border-radius: 1rem;
+    margin-left: -0.25rem;
+    margin-top: -0.25rem;
+  }
+  .vue-color__chrome {
+    width: 100%;
+  }
+</style>
