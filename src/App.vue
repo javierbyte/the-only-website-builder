@@ -8,11 +8,11 @@
             Build your website!
           </div>
           <div class="constructor-container flex-1" v-sortable="{onUpdate: onUpdateOrder}">
-            <div v-for="web in webdata" :key="web.uuid">
-              <div @click="onEditElement(web.uuid)" class="constructor-element">
+            <div v-for="web in orderedElements" :key="web._id">
+              <div @click="onEditElement(web._id)" class="constructor-element">
                 <div class="constructor-element-content">{{web.type}}</div>
               </div>
-              <div class="constructor-element-delete" @click="onDeleteElement(web.uuid)">
+              <div class="constructor-element-delete" @click="onDeleteElement(web._id)">
                 <div class="icon icon-minus"></div>
               </div>
             </div>
@@ -28,8 +28,8 @@
           </div>
         </div><!-- /sidebar-constructor -->
 
-        <div class="sidebar-editor" v-if="webdata.length && activeEditingElement">
-          <div class="sidebar-header" :key="activeEditingElement.uuid">
+        <div class="sidebar-editor" v-if="orderedElements.length && activeEditingElement">
+          <div class="sidebar-header" :key="activeEditingElement._id">
             Editing {{activeEditingElement.type}}
 
             <div class="sidebar-header-back" @click="onCancelEditing">
@@ -47,7 +47,7 @@
           <button @click="onCancelEditing" class="inline-block">
             <div class="icon icon-chevron-left"></div> Go back
           </button>
-          <button @click="onDeleteElement(activeEditingElement.uuid)" class="-danger inline-block">
+          <button @click="onDeleteElement(activeEditingElement._id)" class="-danger inline-block">
             <div class="icon icon-minus"></div> Delete
           </button>
         </div><!-- /sidebar-editor -->
@@ -57,11 +57,11 @@
     <transition-group class="viewerresults" name="flip-list" tag="div">
       <div
         class="component"
-        v-for="web in webdata"
-        :key="web.uuid"
+        v-for="web in orderedElements"
+        :key="web._id"
         :is="'viewer-' + web.type.toLowerCase()"
         :data="web.data"
-        @click="onEditElement(web.uuid)">
+        @click="onEditElement(web._id)">
       </div>
     </transition-group>
   </div>
@@ -70,6 +70,7 @@
 <script>
 const _ = require('lodash')
 const uuidV1 = require('uuid/v1')
+var simplediff = require('../simplediff.js')()
 
 const ROOM = window.location.search.split('?room=')[1] || uuidV1()
 
@@ -83,20 +84,6 @@ if (window.location.hostname !== 'localhost') {
   console.info('Connecting localhost socket')
   socket = io.connect('http://localhost:8124')
 }
-
-var preventUpdate = false
-
-var throttledWebdataHandler = _.throttle((newWebData) => {
-  if (preventUpdate) {
-    preventUpdate = false
-    console.info('PREVENTED UPDATE')
-    return
-  }
-  socket.emit('UPDATE', {
-    room: ROOM,
-    webdata: newWebData
-  })
-}, 64)
 
 function getDefault(type) {
   var kTypes = {
@@ -142,60 +129,129 @@ function getDefault(type) {
   }
 
   return _.assign({}, _.cloneDeep(kTypes[type]), {
-    uuid: new Date().getTime()
+    _id: uuidV1()
   })
 }
+
+function keepDataInSync(room, pushAdapter, pullAdapter) {
+  var state = {}
+
+  return {
+    pushDelta(newState) {
+      var delta = simplediff.diff(state, newState)
+      state = _.cloneDeep(newState)
+
+      console.info('TRYING TO PUSH DELTA', delta, state, newState)
+
+      if (delta) {
+        pushAdapter({
+          delta: delta,
+          blocks: newState.blocks,
+          order: newState.order
+        })
+      } else {
+        console.info('NO DELTA - PUSH')
+      }
+    },
+    pullDelta(ctx, delta) {
+      console.info('PATCHING', state, delta)
+
+      try {
+        state = simplediff.patch(state, delta)
+        pullAdapter(ctx, _.cloneDeep(state))
+      } catch(e) {
+        console.warn('Patch failed')
+        pullAdapter(ctx, _.cloneDeep(state))
+      }
+    },
+
+    setState(ctx, newState) {
+      state = _.cloneDeep(newState)
+      pullAdapter(ctx, _.cloneDeep(state))
+    }
+  }
+}
+
+const stateAdapter = keepDataInSync(ROOM, push => {
+  console.info('PUSH', push)
+  socket.emit('DELTA', _.assign({}, {room: ROOM}, push))
+}, (ctx, pull) => {
+  console.info('PULL', pull)
+  ctx.$set(ctx, 'webData', pull)
+})
+
+const throttledPushDelta = _.throttle(stateAdapter.pushDelta, 128, {
+  leading: false,
+  trailing: true
+})
 
 const app = {
   name: 'app',
   created() {
-    socket.emit('JOINROOM', ROOM)
-
     socket.on('UPDATE', newWebData => {
-      if (_.isEqual(newWebData, this.webdata)) {
-        console.log('Prevented for equality', newWebData)
-      }
       console.info('UPDATE FROM SOCKET', newWebData)
-      preventUpdate = true
-      this.$set(this, 'webdata', newWebData)
+      stateAdapter.pullDelta(this, newWebData.delta)
     })
+
+    socket.on('INITIAL', newWebData => {
+      console.info('INITIAL FROM SOCKET', newWebData)
+      stateAdapter.setState(this, newWebData)
+    })
+
+    socket.emit('JOINROOM', ROOM)
   },
   watch: {
-    webdata: {
-      handler: throttledWebdataHandler,
+    webData: {
+      handler: throttledPushDelta,
       deep: true
     }
   },
   methods: {
     onUpdateOrder(evt) {
-      this.webdata.splice(evt.newIndex, 0, this.webdata.splice(evt.oldIndex, 1)[0])
+      this.webData.order.splice(evt.newIndex, 0, this.webData.order.splice(evt.oldIndex, 1)[0])
     },
-    onEditElement(uuid) {
-      console.log('Enter edit mode', uuid)
+    onEditElement(_id) {
+      console.log('Enter edit mode', _id)
       this.editorStatus.editingActive = true
-      this.editorStatus.editingElement = uuid
+      this.editorStatus.editingElement = _id
     },
-    onDeleteElement(uuid) {
-      console.info('DELETE', uuid)
-      this.editingElement = null
+    onDeleteElement(_id) {
+      console.info('DELETE', _id)
+      this.editorStatus.editingElement = null
       this.editorStatus.editingActive = false
-      this.$set(this, 'webdata', this.webdata.filter(el => {
-        return el.uuid !== uuid
-      }))
+
+      this.$set(this, 'webData', {
+        blocks: _.omitBy(this.webData.blocks, block => {
+          return block._id === _id
+        }),
+        order: _.without(this.webData.order, _id)
+      })
     },
     onCancelEditing() {
       console.info('Leave edit mode')
       this.editorStatus.editingActive = false
     },
     onAddElement(type) {
-      console.info('ADD', this.webdata)
-      this.webdata.push(getDefault(type))
+      console.info('ADD', type)
+      var newElement = getDefault(type)
+
+      this.$set(this, 'webData', {
+        blocks: _.assign({}, this.webData.blocks, {
+          [newElement._id]: newElement
+        }),
+        order: this.webData.order.concat([newElement._id])
+      })
     }
   },
   computed: {
     activeEditingElement() {
-      return _.find(this.webdata, {
-        uuid: this.editorStatus.editingElement
+      return _.find(this.webData.blocks, {
+        _id: this.editorStatus.editingElement
+      })
+    },
+    orderedElements() {
+      return _.map(this.webData.order, _id => {
+        return this.webData.blocks[_id]
       })
     }
   },
@@ -213,7 +269,10 @@ const app = {
         editingActive: false,
         editingElement: 0
       },
-      webdata: []
+      webData: {
+        order: [],
+        blocks: {}
+      }
     }
   }
 }

@@ -104,6 +104,6 @@
     margin-top: -0.25rem;
   }
   .vue-color__chrome {
-    width: 100%;
+    width: 100% !important;
   }
 </style>

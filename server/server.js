@@ -1,69 +1,47 @@
-var app = require('express')();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
+var app = require('express')()
+var server = require('http').Server(app)
+var io = require('socket.io')(server)
 
-server.listen(8124);
+var _ = require('lodash')
 
-const BASE = [{
-  type: 'HEADER',
-  uuid: 0,
-  meta: {
-    active: true
-  },
-  data: {
-    title: 'Header title',
-    subtitle: '',
-    style: {
-      backgroundColor: '#222',
-      color: '#fff',
-      textAlign: 'center'
-    },
-    titleStyle: {
-      fontSize: '4rem',
-      fontWeight: 500
-    },
-    subtitleStyle: {
-      fontSize: '1.4rem',
-      fontWeight: 300,
-      opacity: 0.85
-    }
-  }
-}, {
-  type: 'FOOTER',
-  uuid: 1,
-  meta: {
-    active: true
-  },
-  data: {
-    text: '©2016 Footer Text',
-    style: {
-      backgroundColor: '#eee',
-      color: '#666',
-      textAlign: 'left',
-      fontSize: '1rem'
-    }
-  }
-}]
+var simplediff = require('../simplediff.js')()
+
+server.listen(8124)
 
 var STATE = {}
 
-console.log('STARTING!')
+console.log('STARTING!', 8124)
 
 io.on('connection', function (socket) {
-  socket.on('UPDATE', function (data) {
+  socket.on('DELTA', function (data) {
     var room = data.room
-    STATE[room] = data.webdata
-    socket.broadcast.to(room).emit('UPDATE', STATE[room])
-  });
+    var delta = data.delta
+
+    STATE[room] = simplediff.patch(STATE[room], data.delta)
+
+    socket.broadcast.to(room).emit('UPDATE', {
+      blocks: STATE[room].blocks,
+      order: STATE[room].order,
+      delta: data.delta,
+      room: room
+    })
+  })
 
   socket.on('JOINROOM', function (room) {
-    socket.join(room);
+    console.info('\n\nJOINROOM\n', room)
+
+    socket.join(room)
 
     if (!STATE[room]) {
-      STATE[room] = JSON.parse(JSON.stringify(BASE))
+      STATE[room] = {
+        blocks: {},
+        order: []
+      }
     }
-    console.log('Broadcasting to', room)
 
-    io.to(room).emit('UPDATE', STATE[room]);
-  });
-});
+    socket.emit('INITIAL', {
+      blocks: STATE[room].blocks,
+      order: STATE[room].order
+    })
+  })
+})

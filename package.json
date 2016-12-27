@@ -9,6 +9,7 @@
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
+    "jsondiffpatch": "^0.2.4",
     "lodash": "^4.17.2",
     "socket.io": "^1.7.2",
     "uuid": "^3.0.1",
