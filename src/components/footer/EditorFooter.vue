@@ -15,6 +15,16 @@
       <textAlign v-model="element.data.style.textAlign">
     </div>
 
+    <div class="editor-block">
+      <div class="editor-title">Text Color</div>
+      <colorPicker v-model="element.data.style.color" />
+    </div>
+
+    <div class="editor-block">
+      <div class="editor-title">Background</div>
+      <colorPicker v-model="element.data.style.backgroundColor" />
+    </div>
+
   </div>
 </template>
 
@@ -24,7 +34,8 @@
     props: ['element'],
     components: {
       fontSize: require('../../ui/FontSize.vue'),
-      textAlign: require('../../ui/TextAlign.vue')
+      textAlign: require('../../ui/TextAlign.vue'),
+      colorPicker: require('../../ui/ColorPicker.vue')
     }
   }
 </script>

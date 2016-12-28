@@ -9,8 +9,8 @@
           </div>
           <div class="constructor-container flex-1" v-sortable="{onUpdate: onUpdateOrder}">
             <div v-for="web in orderedElements" :key="web._id">
-              <div @click="onEditElement(web._id)" class="constructor-element">
-                <div class="constructor-element-content">{{web.type}}</div>
+              <div class="constructor-element">
+                <div @click="onEditElement(web._id)" class="constructor-element-content touchable">{{web.type}}</div>
               </div>
               <div class="constructor-element-delete" @click="onDeleteElement(web._id)">
                 <div class="icon icon-minus"></div>
@@ -141,8 +141,6 @@ function keepDataInSync(room, pushAdapter, pullAdapter) {
       var delta = simplediff.diff(state, newState)
       state = _.cloneDeep(newState)
 
-      console.info('TRYING TO PUSH DELTA', delta, state, newState)
-
       if (delta) {
         pushAdapter({
           delta: delta,
@@ -154,14 +152,19 @@ function keepDataInSync(room, pushAdapter, pullAdapter) {
       }
     },
     pullDelta(ctx, delta) {
-      console.info('PATCHING', state, delta)
-
       try {
         state = simplediff.patch(state, delta)
-        pullAdapter(ctx, _.cloneDeep(state))
+
+        if (_.isEqual(ctx.webData, state)) {
+          console.warn('REJECT PATCHING - NO CHANGE', JSON.stringify(delta))
+        } else {
+          // console.warn('PATCHING', JSON.stringify(delta),_.isEqual(ctx.webData, state),simplediff.diff(ctx.webData, state))
+          // console.warn(JSON.stringify(ctx.webData))
+          // console.warn(JSON.stringify(state))
+          pullAdapter(ctx, _.cloneDeep(state))
+        }
       } catch(e) {
-        console.warn('Patch failed')
-        pullAdapter(ctx, _.cloneDeep(state))
+        console.error('Patch failed')
       }
     },
 
@@ -172,15 +175,17 @@ function keepDataInSync(room, pushAdapter, pullAdapter) {
   }
 }
 
-const stateAdapter = keepDataInSync(ROOM, push => {
-  console.info('PUSH', push)
+const stateAdapter = keepDataInSync(ROOM, (push, push2) => {
+  // pushAdapter
+  console.warn('PUSH', JSON.stringify(push.delta))
   socket.emit('DELTA', _.assign({}, {room: ROOM}, push))
 }, (ctx, pull) => {
-  console.info('PULL', pull)
+  // pullAdapter
+  // console.warn('\n\nPULL - APPLY', JSON.stringify(pull), JSON.stringify(ctx.webData))
   ctx.$set(ctx, 'webData', pull)
 })
 
-const throttledPushDelta = _.throttle(stateAdapter.pushDelta, 128, {
+const throttledPushDelta = _.throttle(stateAdapter.pushDelta, 256, {
   leading: false,
   trailing: true
 })
@@ -189,7 +194,7 @@ const app = {
   name: 'app',
   created() {
     socket.on('UPDATE', newWebData => {
-      console.info('UPDATE FROM SOCKET', newWebData)
+      console.warn('UPDATE FROM SOCKET', newWebData.delta)
       stateAdapter.pullDelta(this, newWebData.delta)
     })
 
@@ -297,7 +302,7 @@ export default app
     background: #fff;
   }
 
-  body, input, textarea, button {
+  html, body, input, textarea, button {
     font-family: -apple-system, BlinkMacSystemFont, Segoe IO, Roboto, sans-serif;
     font-weight: 300;
     font-size: 15px;
@@ -376,7 +381,6 @@ export default app
 
   .constructor-element {
     padding: 1rem 1rem 0;
-    cursor: pointer;
   }
   .constructor-element-delete {
     position: absolute;
@@ -543,5 +547,34 @@ export default app
 
   .flip-list-move {
     transition: transform 0.3s;
+  }
+
+  .touchable {
+    cursor: pointer;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  @media screen and (max-width: 768px) {
+    .sidebar {
+      display: none;
+    }
+
+    html, body, input, textarea, button {
+      font-size: 13px;
+    }
+  }
+
+  @media screen and (max-width: 640px) {
+    .sidebar {
+      display: none;
+    }
+
+    html, body, input, textarea, button {
+      font-size: 12px;
+    }
   }
 </style>

@@ -20,10 +20,7 @@ io.on('connection', function (socket) {
     STATE[room] = simplediff.patch(STATE[room], data.delta)
 
     socket.broadcast.to(room).emit('UPDATE', {
-      blocks: STATE[room].blocks,
-      order: STATE[room].order,
-      delta: data.delta,
-      room: room
+      delta: data.delta
     })
   })
 

@@ -26,8 +26,12 @@
     </div>
 
     <div class="editor-block">
+      <div class="editor-title">Text Color</div>
+      <colorPicker v-model="element.data.style.color" />
+    </div>
+    <div class="editor-block">
       <div class="editor-title">Background</div>
-      <background v-model="element.data.style.backgroundColor" />
+      <colorPicker v-model="element.data.style.backgroundColor" />
     </div>
   </div>
 </template>
@@ -39,7 +43,7 @@
     components: {
       fontSize: require('../../ui/FontSize.vue'),
       textAlign: require('../../ui/TextAlign.vue'),
-      background: require('../../ui/Background.vue')
+      colorPicker: require('../../ui/ColorPicker.vue')
     }
   }
 </script>

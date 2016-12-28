@@ -8,6 +8,7 @@
       <div class="module-header-toggle icon icon-chevron-up" v-if="isModuleOpen"></div>
       <div class="module-header-toggle icon icon-chevron-down" v-if="!isModuleOpen"></div>
     </div>
+
     <div class="module-content" v-if="isModuleOpen">
       <ColorPicker v-model="colors" @change-color="onColorChange" />
     </div>
@@ -105,5 +106,13 @@
   }
   .vue-color__chrome {
     width: 100% !important;
+  }
+
+  .vue-color__chrome__hue-wrap {
+    top: 6px !important;
+    height: 14px !important;
+  }
+  .vue-color__chrome__alpha-wrap {
+    display: none;
   }
 </style>
