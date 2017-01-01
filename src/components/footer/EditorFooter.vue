@@ -2,10 +2,10 @@
   <div class="editor-footer">
     <div class="editor-block">
       <div class="editor-title">Text</div>
-      <input class="input" type="text" v-model="element.data.text"/>
+      <input class="input" type="text" v-model="element.data.title"/>
     </div>
 
-    <div class="editor-block" v-if="element.data.text.length">
+    <div class="editor-block" v-if="element.data.title.length">
       <div class="editor-title">Font Size</div>
       <fontSize :defaultValue="'1rem'" v-model="element.data.style.fontSize" />
     </div>

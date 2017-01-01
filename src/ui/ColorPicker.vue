@@ -1,12 +1,12 @@
 <template>
   <div class="module module-colorpicker">
-    <div class="module-header" @click="onModuleToggle">
+    <div class="module-header touchable" @click="onModuleToggle">
       <div class="module-colorpicker-color" :style="{backgroundColor: value}"></div>
-      <div class="inline-block">
+      <div class="module-header-title">
         {{value}}
       </div>
-      <div class="module-header-toggle icon icon-chevron-up" v-if="isModuleOpen"></div>
-      <div class="module-header-toggle icon icon-chevron-down" v-if="!isModuleOpen"></div>
+      <div class="module-header-toggle icon ti-angle-up" v-if="isModuleOpen"></div>
+      <div class="module-header-toggle icon ti-angle-down" v-if="!isModuleOpen"></div>
     </div>
 
     <div class="module-content" v-if="isModuleOpen">
@@ -67,18 +67,21 @@
 <style>
   .module {
     border-radius: 2px;
-    background: #444;
+    background: #363642;
   }
   .module-header {
     border-radius: 2px;
     padding: 0.618rem 1rem;
     cursor: pointer;
+
+    display: flex;
+    align-items: center;
   }
-  .module-header-toggle {
-    float: right;
+  .module-header-title {
+    flex: 1;
   }
   .module-header:hover {
-    background: #505050;
+    background: #43434f;
   }
   .module-content {
     padding: 0.618rem 1rem;
@@ -88,9 +91,7 @@
     height: 1.25rem;
     width: 1.25rem;
     border-radius: 1.25rem;
-    display: inline-block;
-    vertical-align: middle;
-    margin-right: 0.25rem;
+    margin-right: 0.5rem;
     box-shadow: rgba(0, 0, 0, 0.1) 0 1px 0, rgba(0, 0, 0, 0.1) 0 1px 5px;
   }
 
@@ -109,7 +110,7 @@
   }
 
   .vue-color__chrome__hue-wrap {
-    top: 6px !important;
+    top: 7px !important;
     height: 14px !important;
   }
   .vue-color__chrome__alpha-wrap {

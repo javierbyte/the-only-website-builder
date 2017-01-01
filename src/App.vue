@@ -7,24 +7,108 @@
           <div class="sidebar-header">
             Build your website!
           </div>
+          <transition-group class="constructor-container flex-1" name="flip-list" tag="div"  v-sortable="{onUpdate: onUpdateOrder}">
+          <!--
           <div class="constructor-container flex-1" v-sortable="{onUpdate: onUpdateOrder}">
+          -->
             <div v-for="web in orderedElements" :key="web._id">
               <div class="constructor-element">
-                <div @click="onEditElement(web._id)" class="constructor-element-content touchable">{{web.type}}</div>
+                <div @click="onEditElement(web._id)" class="constructor-element-content touchable">
+                  <div class="constructor-element-content-icon">
+                    <div :class="kIcons[web.type]"/>
+                    <div class="constructor-element-content-icon-type">
+                      {{web.type}}
+                    </div>
+                  </div>
+                  <div class="constructor-element-content-title">
+                    {{web.data.title}}
+                  </div>
+                </div>
               </div>
               <div class="constructor-element-delete" @click="onDeleteElement(web._id)">
-                <div class="icon icon-minus"></div>
+                <div class="icon ti-close"></div>
               </div>
             </div>
-          </div>
+          </transition-group><!-- ./constructor-container -->
 
           <div class="constructor-add">
             <div class="constructor-add-element" @click="onAddElement('HEADER')">
-              +Header
+              <div class="constructor-add-element-icon ti-layout-media-center"></div>
+              <div class="constructor-add-element-title">
+                Header
+              </div>
             </div>
+
             <div class="constructor-add-element" @click="onAddElement('FOOTER')">
-              +Footer
+              <div class="constructor-add-element-icon ti-layout-media-overlay-alt"></div>
+              <div class="constructor-add-element-title">
+                Footer
+              </div>
             </div>
+
+            <div class="constructor-add-element" @click="onAddElement('HEADER')">
+              <div class="constructor-add-element-icon ti-layout-list-thumb-alt"></div>
+              <div class="constructor-add-element-title">
+                Gallery
+              </div>
+            </div>
+
+            <div class="constructor-add-element" @click="onAddElement('HEADER')">
+              <div class="constructor-add-element-icon ti-layout-media-left"></div>
+              <div class="constructor-add-element-title">
+                Feature
+              </div>
+            </div>
+
+            <div class="constructor-add-element" @click="onAddElement('HEADER')">
+              <div class="constructor-add-element-icon ti-layout-slider"></div>
+              <div class="constructor-add-element-title">
+                Slider
+              </div>
+            </div>
+
+            <div class="constructor-add-element" @click="onAddElement('HEADER')">
+              <div class="constructor-add-element-icon ti-layout-accordion-list"></div>
+              <div class="constructor-add-element-title">
+                Timeline
+              </div>
+            </div>
+
+            <div class="constructor-add-element" @click="onAddElement('HEADER')">
+              <div class="constructor-add-element-icon ti-map-alt"></div>
+              <div class="constructor-add-element-title">
+                Map
+              </div>
+            </div>
+
+            <div class="constructor-add-element" @click="onAddElement('HEADER')">
+              <div class="constructor-add-element-icon ti-email"></div>
+              <div class="constructor-add-element-title">
+                Contact
+              </div>
+            </div>
+
+            <div class="constructor-add-element" @click="onAddElement('HEADER')">
+              <div class="constructor-add-element-icon ti-menu"></div>
+              <div class="constructor-add-element-title">
+                Menu
+              </div>
+            </div>
+          </div><!-- /constructor-add -->
+
+          <div class="sidebar-export">
+            <button @click="onDownloadWebsite">
+              Download your website!
+            </button>
+
+            <a href="#" class="sidebar-export-link" @click="onShareWebsite">
+              Share real-time editor URL
+              <div>Highly experimental!</div>
+            </a>
+          </div>
+
+          <div class="sidebar-footer">
+            Made by <a href="http://javier.xyz/" target="_blank">javierbyte</a>.
           </div>
         </div><!-- /sidebar-constructor -->
 
@@ -33,23 +117,27 @@
             Editing {{activeEditingElement.type}}
 
             <div class="sidebar-header-back" @click="onCancelEditing">
-              <div class="icon icon-chevron-left"></div>
+              <div class="icon ti-angle-left"></div>
             </div>
           </div>
 
-          <div class="p-1">
+          <div class="sidebar-editor-content">
             <div
               :is="'editor-' + activeEditingElement.type.toLowerCase()"
               :element="activeEditingElement">
             </div>
-          </div>
 
-          <button @click="onCancelEditing" class="inline-block">
-            <div class="icon icon-chevron-left"></div> Go back
-          </button>
-          <button @click="onDeleteElement(activeEditingElement._id)" class="-danger inline-block">
-            <div class="icon icon-minus"></div> Delete
-          </button>
+            <div class="editor-footer">
+              <button @click="onCancelEditing" class="inline-block">
+                <div class="icon ti-angle-left"></div>
+                Go back
+              </button>
+              <button @click="onDeleteElement(activeEditingElement._id)" class="-danger inline-block">
+                <div class="icon ti-close"></div>
+                Delete
+              </button>
+            </div><!-- /editor-foote -->
+          </div><!-- /sidebar-editor-content -->
         </div><!-- /sidebar-editor -->
       </div><!-- /sidebar-content -->
     </div><!-- /sidebar -->
@@ -60,8 +148,7 @@
         v-for="web in orderedElements"
         :key="web._id"
         :is="'viewer-' + web.type.toLowerCase()"
-        :data="web.data"
-        @click="onEditElement(web._id)">
+        :data="web.data">
       </div>
     </transition-group>
   </div>
@@ -85,6 +172,11 @@ if (window.location.hostname !== 'localhost') {
   socket = io.connect('http://localhost:8124')
 }
 
+var kIcons = {
+  HEADER: 'ti-layout-media-center',
+  FOOTER: 'ti-layout-media-overlay-alt'
+}
+
 function getDefault(type) {
   var kTypes = {
     HEADER: {
@@ -96,8 +188,9 @@ function getDefault(type) {
         title: 'Header title',
         subtitle: '',
         style: {
-          backgroundColor: '#222',
-          color: '#fff',
+          minHeight: '0',
+          backgroundColor: '#1B1B26',
+          color: '#FFFFFF',
           textAlign: 'center'
         },
         titleStyle: {
@@ -117,10 +210,10 @@ function getDefault(type) {
         active: true
       },
       data: {
-        text: '©2016 Footer Text',
+        title: '©2016 Footer Text',
         style: {
-          backgroundColor: '#eee',
-          color: '#666',
+          backgroundColor: '#EEEEEE',
+          color: '#666666',
           textAlign: 'left',
           fontSize: '1rem'
         }
@@ -246,7 +339,13 @@ const app = {
         }),
         order: this.webData.order.concat([newElement._id])
       })
-    }
+    },
+    onDownloadWebsite() {
+      console.info('DOWNLOAD!')
+    },
+    onShareWebsite() {
+      console.info('SHARE!')
+    },
   },
   computed: {
     activeEditingElement() {
@@ -277,7 +376,8 @@ const app = {
       webData: {
         order: [],
         blocks: {}
-      }
+      },
+      kIcons: kIcons
     }
   }
 }
@@ -307,6 +407,7 @@ export default app
     font-weight: 300;
     font-size: 15px;
     line-height: 1.618;
+    text-rendering: optimizeLegibility;
   }
 
   b, h1, h2, h3, strong {
@@ -320,12 +421,39 @@ export default app
   .sidebar {
     width: 20rem;
     height: 100vh;
-    background: #353535;
+    background: #292933;
     overflow-x: hidden;
     color: #9e9e9e;
   }
   .sidebar-content {
     transition: transform 0.3s;
+  }
+  .sidebar-export {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .sidebar-export-link {
+    margin: 1rem;
+    font-size: 0.8rem;
+    text-align: center;
+  }
+  .sidebar-footer {
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .sidebar a {
+    color: #bbbbbd;
+    text-decoration: none;
+  }
+  .sidebar a:hover {
+    color: #eee;
+  }
+  .sidebar a:active {
+    color: #fff;
+    top: 1px;
   }
   .sidebar.-open .sidebar-content {
     transform: translatex(-20rem);
@@ -334,12 +462,22 @@ export default app
     width: 20rem;
     position: absolute;
   }
+
   .sidebar-editor {
     width: 20rem;
     position: absolute;
     left: 20rem;
-  }
+    height: 100vh;
+    overflow: hidden;
 
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar-editor-content {
+    flex: 1;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
   .sidebar-header {
     height: 2.618rem;
     line-height: 2.618rem;
@@ -347,9 +485,10 @@ export default app
     font-weight: 500;
     text-transform: uppercase;
     font-size: 0.8rem;
-    background: #3f3f3f;
+    background: #363642; /* sidebar-header-color */
     color: #fff;
     box-shadow: rgba(0, 0, 0, 0.1) 0 1px 0, rgba(0, 0, 0, 0.1) 0 1px 3px;
+    z-index: 1;
   }
   .sidebar-header-back {
     height: 2.618rem;
@@ -361,30 +500,56 @@ export default app
     left: 0;
     color: #999;
     cursor: pointer;
-    border-right: 1px solid rgba(0, 0, 0, 0.05);
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.05);
   }
   .sidebar-header-back:hover {
     color: #fff;
+    background: rgba(255, 255, 255, 0.07);
+  }
+  .sidebar-header-back:active {
+    top: 1px;
   }
 
   .editor {}
   .editor-block {
-    padding-bottom: 2rem;
+    padding: 1rem;
+    border-top: 1px solid #363642;
+    border-bottom: 1px solid #21212a;
+  }
+  .editor-block:first-child {
+    border-top: none;
+  }
+  .editor-block:last-child {
+    border-bottom: none;
   }
   .editor-title {
     color: #fff;
     text-transform: uppercase;
     font-weight: 500;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     padding-bottom: 0.309rem;
   }
+  .editor-subtitle {
+    color: #cacada;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 0.75rem;
+    margin-top: 1rem;
+  }
+  .editor-footer {
+    padding: 1rem;
+  }
 
+  .constructor-container {
+    margin-top: 0.5rem;
+  }
   .constructor-element {
-    padding: 1rem 1rem 0;
+    padding: 0.5rem 1rem;
   }
   .constructor-element-delete {
     position: absolute;
-    top: 0.5rem;
+    top: 0rem;
     right: 0.5rem;
     width: 1.5rem;
     height: 1.5rem;
@@ -394,13 +559,12 @@ export default app
     text-align: center;
     color: #ddd;
     display: block;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     cursor: pointer;
     font-weight: 600;
   }
   .icon {
     display: inline-block;
-    top: -1px;
   }
   .icon::before {
     vertical-align: middle;
@@ -411,42 +575,102 @@ export default app
     color: #fff;
     box-shadow: rgba(0, 0, 0, 0.1) 0 1px 0, rgba(0, 0, 0, 0.1) 0 1px 3px;
   }
+  .constructor-element-delete:active {
+    background: #f00;
+    top: 1px;
+  }
   .constructor-element-content {
-    padding: 1rem;
+    height: 3rem; /* var: constructor-element-content-height */
     background: #e0e1e2;
     border-radius: 2px;
     display: flex;
+    justify-content: center;
+    align-items: justify;
+    color: #333;
+    display: flex;
+  }
+  .constructor-element-content-icon {
+    height: 3rem; /* var: constructor-element-content-height */
+    display: block;
+    background: rgba(0, 0, 0, 0.1);
+    width: 4rem;
+    line-height: 1;
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: #333;
+  }
+  .constructor-element-content-icon-type {
+    font-size: 0.618rem;
+    font-weight: 400;
+    margin-top: 0.309rem;
+  }
+  .constructor-element-content-title {
+    line-height: 3rem; /* var: constructor-element-content-height */
+    padding-right: 1rem;
+    overflow: hidden;
+    flex: 1;
+    padding-left: 1rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
   .constructor-element-content:hover {
     box-shadow: rgba(0, 0, 0, 0.2) 0 1px 0, rgba(0, 0, 0, 0.2) 0 2px 8px;
     background: #fff;
     color: #000;
   }
+  .constructor-element-content:active {
+    top: 1px;
+  }
 
   .constructor-add {
     padding: 1rem;
     display: flex;
+    flex-wrap: wrap;
   }
   .constructor-add-element {
+    margin-right: 1px;
+    margin-bottom: 1px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     flex: 1;
-    line-height: 2rem;
-    height: 2rem;
     padding: 0 1rem;
-    background: #222;
+    height: 4rem;
+    background: #1b1b26;
     cursor: pointer;
     text-align: center;
     float: left;
-    margin-right: 1px;
-    margin-bottom: 1px;
     text-transform: uppercase;
-    font-size: .8rem;
+    font-size: 0.75rem;
     font-weight: 500;
+    border-radius: 2px;
+  }
+  .constructor-add-element-title {
+    line-height: 1;
+    padding-bottom: 0.5rem;
   }
   .constructor-add-element:hover {
-    background: #111;
+    background: #111119;
+    z-index: 1;
+  }
+  .constructor-add-element:hover > div {
+    background: linear-gradient(to bottom right, #5f86e4, #b857ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .constructor-add-element:active {
+    background: #000;
+    color: #fff;
+    top: 1px;
+  }
+  .constructor-add-element-icon {
+    display: block;
+    height: 2rem;
+    width: 2rem;
+    line-height: 2rem;
+    font-size: 17px;
   }
 
   .viewerresults {
@@ -456,13 +680,8 @@ export default app
     height: 100vh;
   }
 
-  .component {
-    cursor: pointer;
-  }
-
   button {
     border: 0;
-    margin: 1rem;
     padding: 0 1rem;
     background: #2980B9;
     color: #fff;
@@ -483,9 +702,13 @@ export default app
   }
   button.-danger {
     background: #a00;
+    box-shadow: rgba(0, 0, 0, 0.1) 0 1px 0, inset rgba(255, 255, 255, 0.22) 0 1px 0;
   }
   button.-danger:hover {
     background: #c00;
+  }
+  button .icon {
+    margin-right: 0.25rem;
   }
   .input {
     line-height: 1;
@@ -494,13 +717,18 @@ export default app
     display: block;
     border-radius: 2px;
     width: 100%;
-    background: #222;
+    background: #1b1b26;
     color: #777;
     border-radius: 2rem;
     font-weight: 400;
   }
   .input[type='text'] {
     box-shadow: inset rgba(0, 0, 0, 0.1) 0 1px 0, rgba(255, 255, 255, 0.05) 0 1px 0;
+  }
+  .input[type='range'] {
+    width: 96%;
+    margin-left: 2%;
+    margin-right: 2%;
   }
   .input:focus {
     outline: none;
@@ -556,6 +784,12 @@ export default app
     -webkit-user-select: none;
     -ms-user-select: none;
     user-select: none;
+  }
+
+  .text-gradient {
+    background: linear-gradient(to bottom right, #5f86e4, #b857ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   @media screen and (max-width: 768px) {

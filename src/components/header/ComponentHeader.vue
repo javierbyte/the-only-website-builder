@@ -23,9 +23,17 @@
   .component-header .component-content{
     padding-top: 10vmin;
     padding-bottom: 10vmin;
+    width: 100%;
+  }
+
+  .component-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
   .component-content > * {
-    transition: font-size 0.2s;
+    transition: font-size 0.2s, color 0.2s;
   }
 </style>

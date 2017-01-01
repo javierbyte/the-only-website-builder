@@ -25,7 +25,7 @@
 <style>
   .ui-options-container {
     display: flex;
-    border: 1px solid #bbb;
+    border: 1px solid #cacada;
     border-radius: 3px;
   }
 
@@ -38,11 +38,11 @@
     font-size: 0.8rem;
   }
   .ui-options-element:not(:last-child) {
-    border-right: 1px solid #bbb;
+    border-right: 1px solid #cacada;
   }
   .ui-options-element.-active {
     font-weight: 400;
-    background: #bbb;
+    background: #cacada;
     color: #222;
   }
 </style>

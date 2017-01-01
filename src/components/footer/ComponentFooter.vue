@@ -1,7 +1,7 @@
 <template>
   <div class="component-footer" :style="this.data.style">
     <div class="component-content">
-      {{data.text}}
+      {{data.title}}
     </div>
   </div>
 </template>
@@ -15,11 +15,11 @@
 
 <style>
   .component-footer .component-content{
-    padding-top: 2rem;
-    padding-bottom: 2rem;
+    padding-top: 5vmin;
+    padding-bottom: 5vmin;
   }
 
-  .component-content > * {
-    transition: font-size 0.2s;
+  .component-content {
+    transition: font-size 0.2s, color 0.2s;
   }
 </style>
