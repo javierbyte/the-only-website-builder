@@ -23,7 +23,7 @@
 
     <div class="editor-block">
       <div class="editor-title">Text Align</div>
-      <textAlign v-model="element.data.style.textAlign">
+      <textAlign v-model="element.data.style.textAlign" />
     </div>
 
     <div class="editor-block">
@@ -37,7 +37,7 @@
 
     <div class="editor-block">
       <div class="editor-title">Block Size</div>
-      <blockSize v-model="element.data.style.minHeight">
+      <blockSize v-model="element.data.style.minHeight" />
     </div>
   </div>
 </template>

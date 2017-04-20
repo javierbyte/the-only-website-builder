@@ -12,7 +12,7 @@
 
     <div class="editor-block">
       <div class="editor-title">Text Align</div>
-      <textAlign v-model="element.data.style.textAlign">
+      <textAlign v-model="element.data.style.textAlign" />
     </div>
 
     <div class="editor-block">
