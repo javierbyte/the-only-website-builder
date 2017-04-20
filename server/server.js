@@ -1,3 +1,5 @@
+const PORT = process.env.PORT || 8124;
+
 const app = require('express')();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
@@ -6,11 +8,11 @@ const _ = require('lodash');
 
 const simplediff = require('../simplediff.js')();
 
-server.listen(8124);
+server.listen(PORT);
 
 const STATE = {};
 
-console.log('STARTING!', 8124);
+console.log('STARTING!', PORT);
 
 io.on('connection', function(socket) {
   socket.on('DELTA', function(data) {

@@ -1,67 +1,89 @@
-const _ = require('lodash')
+const _ = require('lodash');
 
-const kEmptyString = 'NAYNAYNAY'
+const kEmptyString = 'NAYNAYNAY';
 
 function simplediff() {
   return {
     applyRawPatch(obj, obj2) {
-      var allKeys = _.union(_.keys(obj), _.keys(obj2))
+      var allKeys = _.union(_.keys(obj), _.keys(obj2));
 
-      var merged = _.reduce(allKeys, (res, key) => {
-        if (!_.isEqual(obj[key], obj2[key])) {
-          if (_.isPlainObject(obj[key]) && _.isPlainObject(obj2[key]) && !_.isEmpty(obj[key]) && !_.isEmpty(obj2[key])) {
-            res[key] = this.applyRawPatch(obj[key], obj2[key])
+      var merged = _.reduce(
+        allKeys,
+        (res, key) => {
+          if (!_.isEqual(obj[key], obj2[key])) {
+            if (
+              _.isPlainObject(obj[key]) &&
+              _.isPlainObject(obj2[key]) &&
+              !_.isEmpty(obj[key]) &&
+              !_.isEmpty(obj2[key])
+            ) {
+              res[key] = this.applyRawPatch(obj[key], obj2[key]);
+            } else {
+              res[key] = _.isUndefined(obj2[key]) ? obj[key] : obj2[key];
+            }
           } else {
-            res[key] = _.isUndefined(obj2[key]) ? obj[key] : obj2[key]
+            res[key] = _.cloneDeep(obj[key]);
           }
-        } else {
-          res[key] = _.cloneDeep(obj[key])
-        }
-        return res
-      }, {})
+          return res;
+        },
+        {}
+      );
 
-      return _.isEmpty(merged) ? null : merged
+      return _.isEmpty(merged) ? null : merged;
     },
     clean(obj) {
-      return _.reduce(obj, (res, e, key) => {
-        if (_.isPlainObject(e)) {
-          res[key] = this.clean(e)
-        } else if (e !== kEmptyString) {
-          res[key] = e
-        }
+      return _.reduce(
+        obj,
+        (res, e, key) => {
+          if (_.isPlainObject(e)) {
+            res[key] = this.clean(e);
+          } else if (e !== kEmptyString) {
+            res[key] = e;
+          }
 
-        return res
-      }, {})
+          return res;
+        },
+        {}
+      );
     },
     patch(obj, patch) {
       if (!patch) {
-        return _.cloneDeep(obj)
+        return _.cloneDeep(obj);
       }
 
-      var patched = this.applyRawPatch(obj, patch)
+      var patched = this.applyRawPatch(obj, patch);
 
-      return this.clean(patched)
+      return this.clean(patched);
     },
     diff(obj, obj2) {
-      var allKeys = _.union(_.keys(obj), _.keys(obj2))
+      var allKeys = _.union(_.keys(obj), _.keys(obj2));
 
-      var patch = _.reduce(allKeys, (res, key) => {
-        if (!_.isEqual(obj[key], obj2[key])) {
-          if (_.isPlainObject(obj[key]) && _.isPlainObject(obj2[key]) && !_.isEmpty(obj[key]) && !_.isEmpty(obj2[key])) {
-            res[key] = this.diff(obj[key], obj2[key])
-          } else {
-            res[key] = _.isUndefined(obj2[key]) ? kEmptyString : obj2[key]
+      var patch = _.reduce(
+        allKeys,
+        (res, key) => {
+          if (!_.isEqual(obj[key], obj2[key])) {
+            if (
+              _.isPlainObject(obj[key]) &&
+              _.isPlainObject(obj2[key]) &&
+              !_.isEmpty(obj[key]) &&
+              !_.isEmpty(obj2[key])
+            ) {
+              res[key] = this.diff(obj[key], obj2[key]);
+            } else {
+              res[key] = _.isUndefined(obj2[key]) ? kEmptyString : obj2[key];
+            }
           }
-        }
-        return res
-      }, {})
+          return res;
+        },
+        {}
+      );
 
-      return _.isEmpty(patch) ? null : patch
+      return _.isEmpty(patch) ? null : patch;
     }
-  }
+  };
 }
 
-module.exports = simplediff
+module.exports = simplediff;
 
 /*
 var differ = simplediff()
