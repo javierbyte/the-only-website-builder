@@ -166,7 +166,7 @@ history.pushState({}, null, `?room=${ROOM}`);
 var socket = {}
 if (window.location.hostname !== 'localhost') {
   console.info('Connecting javierbyte socket')
-  socket = io.connect('http://javierbyte.com:8124')
+  socket = io.connect('http://go.javier.xyz:7906')
 } else {
   console.info('Connecting localhost socket')
   socket = io.connect('http://localhost:8124')
