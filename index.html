@@ -20,9 +20,8 @@
         head.appendChild(js)
       }
 
-
       if (window.location.hostname !== 'localhost') {
-        appendJS('http://javierbyte.com:8124/socket.io/socket.io.js', function() {
+        appendJS('http://go.javier.xyz:7906/socket.io/socket.io.js', function() {
           console.info('Loading javierbyte socket')
           appendJS('dist/build.js')
         })
