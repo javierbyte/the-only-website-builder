@@ -1,44 +1,44 @@
-var app = require('express')()
-var server = require('http').Server(app)
-var io = require('socket.io')(server)
+const app = require('express')();
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
 
-var _ = require('lodash')
+const _ = require('lodash');
 
-var simplediff = require('../simplediff.js')()
+const simplediff = require('../simplediff.js')();
 
-server.listen(8124)
+server.listen(8124);
 
-var STATE = {}
+const STATE = {};
 
-console.log('STARTING!', 8124)
+console.log('STARTING!', 8124);
 
-io.on('connection', function (socket) {
-  socket.on('DELTA', function (data) {
-    var room = data.room
-    var delta = data.delta
+io.on('connection', function(socket) {
+  socket.on('DELTA', function(data) {
+    const room = data.room;
+    const delta = data.delta;
 
-    STATE[room] = simplediff.patch(STATE[room], data.delta)
+    STATE[room] = simplediff.patch(STATE[room], data.delta);
 
     socket.broadcast.to(room).emit('UPDATE', {
       delta: data.delta
-    })
-  })
+    });
+  });
 
-  socket.on('JOINROOM', function (room) {
-    console.info('\n\nJOINROOM\n', room)
+  socket.on('JOINROOM', function(room) {
+    console.info('\n\nJOINROOM\n', room);
 
-    socket.join(room)
+    socket.join(room);
 
     if (!STATE[room]) {
       STATE[room] = {
         blocks: {},
         order: []
-      }
+      };
     }
 
     socket.emit('INITIAL', {
       blocks: STATE[room].blocks,
       order: STATE[room].order
-    })
-  })
-})
+    });
+  });
+});
