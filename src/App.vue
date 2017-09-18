@@ -46,17 +46,17 @@
               </div>
             </div>
 
-            <div class="constructor-add-element" @click="onAddElement('HEADER')">
-              <div class="constructor-add-element-icon ti-layout-list-thumb-alt"></div>
+            <div class="constructor-add-element" @click="onAddElement('FEATURE')">
+              <div class="constructor-add-element-icon ti-layout-media-left"></div>
               <div class="constructor-add-element-title">
-                Gallery
+                Feature
               </div>
             </div>
 
             <div class="constructor-add-element" @click="onAddElement('HEADER')">
-              <div class="constructor-add-element-icon ti-layout-media-left"></div>
+              <div class="constructor-add-element-icon ti-layout-list-thumb-alt"></div>
               <div class="constructor-add-element-title">
-                Feature
+                Gallery
               </div>
             </div>
 
@@ -127,7 +127,7 @@
               :element="activeEditingElement">
             </div>
 
-            <div class="editor-footer">
+            <div class="sidebar-editor-footer flex flex-space-between">
               <button @click="onCancelEditing" class="inline-block">
                 <div class="icon ti-angle-left"></div>
                 Go back
@@ -174,7 +174,8 @@ if (window.location.hostname !== 'localhost') {
 
 var kIcons = {
   HEADER: 'ti-layout-media-center',
-  FOOTER: 'ti-layout-media-overlay-alt'
+  FOOTER: 'ti-layout-media-overlay-alt',
+  FEATURE: 'ti-layout-media-left'
 }
 
 function getDefault(type) {
@@ -216,6 +217,24 @@ function getDefault(type) {
           color: '#666666',
           textAlign: 'left',
           fontSize: '1rem'
+        }
+      }
+    },
+    FEATURE: {
+      type: 'FEATURE',
+      meta: {
+        active: true
+      },
+      data: {
+        features: [{
+          icon: 'ti-close',
+          title: 'Feature name',
+          description: 'Feature description'
+        }],
+        style: {
+          minHeight: '0',
+          backgroundColor: '#e0e1e2',
+          color: '#456',
         }
       }
     }
@@ -365,6 +384,9 @@ const app = {
 
     'viewer-footer': require('./components/footer/ComponentFooter.vue'),
     'editor-footer': require('./components/footer/EditorFooter.vue'),
+
+    'viewer-feature': require('./components/feature/ComponentFeature.vue'),
+    'editor-feature': require('./components/feature/EditorFeature.vue'),
   },
   data () {
     return {
@@ -510,6 +532,10 @@ export default app
   .sidebar-header-back:active {
     top: 1px;
   }
+  .sidebar-editor-footer {
+    margin-top: 1rem;
+    padding: 2rem 1rem 1rem;
+  }
 
   .editor {}
   .editor-block {
@@ -539,6 +565,62 @@ export default app
   }
   .editor-footer {
     padding: 1rem;
+  }
+  .editor-card {
+    margin-bottom: 1rem;
+    box-shadow: rgba(0, 0, 0, 0.1) 0 1px 0, rgba(0, 0, 0, 0.1) 0 2px 6px;
+  }
+  .editor-card-header {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.618rem 1rem;
+    line-height: 1rem;
+    border-radius: 5px 5px 0 0;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #ddd;
+  }
+  .editor-card-body {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 1rem;
+    border-radius: 0 0 5px 5px;
+  }
+  .editor-card:last-of-type {
+    margin-bottom: 0;
+  }
+  .editor-card-subtitle {
+    line-height: 1;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+  .editor-icon-select {
+    border-radius: 3px;
+    height: 4rem;
+    line-height: 4rem;
+    width: 5rem;
+    font-size: 1.5rem;
+    text-align: center;
+    padding-right: 1rem;
+    background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .editor-icon-select::after {
+    content: "";
+    height: 0;
+    width: 0;
+    position: absolute;
+    display: block;
+    top: 50%;
+    right: 0.618rem;
+    margin-top: -2px;
+    border: 5px solid transparent;
+    border-top: 5px solid rgba(255, 255, 255, 0.333);
+  }
+  .editor-icon-select .icon::before {
+    line-height: 3.7rem;
+    font-size: 2rem;
+    display: block;
   }
 
   .constructor-container {
@@ -764,6 +846,18 @@ export default app
 
   .p-1 {
     padding: 1rem;
+  }
+  .flex {
+    display: flex;
+  }
+  .flex-wrap {
+    flex-wrap: wrap;
+  }
+  .flex-justify-center {
+    justify-content: center;
+  }
+  .flex-space-between {
+    justify-content: space-between;
   }
   .flex-1 {
     flex: 1;

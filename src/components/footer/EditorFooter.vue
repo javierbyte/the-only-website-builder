@@ -1,5 +1,5 @@
 <template>
-  <div class="editor-footer">
+  <div class="editor-component-footer">
     <div class="editor-block">
       <div class="editor-title">Text</div>
       <input class="input" type="text" v-model="element.data.title"/>

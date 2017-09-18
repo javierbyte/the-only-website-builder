@@ -10,7 +10,7 @@
     </div>
 
     <div class="module-content" v-if="isModuleOpen">
-      <ColorPicker v-model="colors" @change-color="onColorChange" />
+      <ColorPicker v-model="colors" @input="onColorChange" />
     </div>
   </div>
 </template>
@@ -55,6 +55,7 @@
     },
     methods: {
       onColorChange(evt) {
+        console.log("new color", evt.hex)
         this.$emit('input', evt.hex)
       },
       onModuleToggle() {
@@ -105,15 +106,18 @@
     margin-left: -0.25rem;
     margin-top: -0.25rem;
   }
-  .vue-color__chrome {
+  .vc-chrome {
     width: 100% !important;
   }
 
-  .vue-color__chrome__hue-wrap {
-    top: 7px !important;
-    height: 14px !important;
+  .vc-hue.vc-hue--horizontal {
+    height: 14px;
+    top: 7px;
   }
-  .vue-color__chrome__alpha-wrap {
+  .vc-hue-picker {
+    top: 2px;
+  }
+  .vc-chrome-alpha-wrap {
     display: none;
   }
 </style>

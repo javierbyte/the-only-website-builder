@@ -1,5 +1,5 @@
 <template>
-  <div class="editor-header">
+  <div class="editor-component-header">
 
     <div class="editor-block">
       <div class="editor-title">Title</div>
