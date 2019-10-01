@@ -5,7 +5,7 @@
   "author": "Javier Bórquez <hi@javier.xyz>",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --open --inline --hot",
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --inline --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
@@ -15,7 +15,7 @@
     "uuid": "^3.0.1",
     "vue": "^2.1.0",
     "vue-color": "^2.0.3",
-    "vue-sortable": "https://github.com/wormen/vue-sortable"
+    "vue-sortable": "git://github.com/MunGell/vue-sortable#77c26994"
   },
   "devDependencies": {
     "babel-core": "^6.0.0",

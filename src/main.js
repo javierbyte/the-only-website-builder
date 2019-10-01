@@ -1,11 +1,15 @@
-import Vue from 'vue'
-import App from './App.vue'
+import Vue from "vue";
+import App from "./App.vue";
 
-import Sortable from 'vue-sortable'
+import Sortable from 'sortablejs'
 
-Vue.use(Sortable)
+Vue.directive('sortable', {
+  inserted: function (el, binding) {
+    new Sortable(el, binding.value || {})
+  }
+})
 
 new Vue({
-  el: '#app',
-  render: h => h(App)
-})
+	el: "#app",
+	render: h => h(App)
+});
