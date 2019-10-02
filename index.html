@@ -21,12 +21,13 @@
       }
 
       if (window.location.hostname !== 'localhost') {
-        appendJS('http://go.javier.xyz:7906/socket.io/socket.io.js', function() {
+        appendJS('https://the-only-website-server-awhunhujrp.now.sh/socket.io/socket.io.js', function() {
           console.info('Loading javierbyte socket')
           appendJS('dist/build.js')
         })
       } else {
-        appendJS('http://localhost:8124/socket.io/socket.io.js', function() {
+        // appendJS('http://localhost:8124/socket.io/socket.io.js', function() {
+          appendJS('https://the-only-website-server-awhunhujrp.now.sh/socket.io/socket.io.js', function() {
           console.info('Loading localhost socket')
           appendJS('dist/build.js')
         })
