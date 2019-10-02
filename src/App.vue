@@ -166,10 +166,10 @@ history.pushState({}, null, `?room=${ROOM}`);
 var socket = {}
 if (window.location.hostname !== 'localhost') {
   console.info('Connecting javierbyte socket')
-  socket = io.connect('https://the-only-website-server-awhunhujrp.now.sh')
+  socket = io.connect('https://the-only-website-server-ipysbatudt.now.sh')
 } else {
   console.info('Connecting localhost socket')
-  socket = io.connect('https://the-only-website-server-awhunhujrp.now.sh')
+  socket = io.connect('https://the-only-website-server-ipysbatudt.now.sh')
 }
 
 var kIcons = {
