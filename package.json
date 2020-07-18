@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "jsondiffpatch": "^0.2.4",
-    "lodash": "^4.17.2",
+    "lodash": "^4.17.19",
     "socket.io": "^1.7.2",
     "uuid": "^3.0.1",
     "vue": "^2.1.0",
